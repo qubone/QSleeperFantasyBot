@@ -16,7 +16,7 @@ async def on_ready():
     print(f"Logged in as {bot.user}")
 
 @bot.command(name="trade")
-async def trade(ctx, *, players):
+async def trade(ctx, *, players: str):
     """
     Usage: !trade player1 vs player2
     Example: !trade Tyreek Hill vs Bijan Robinson
