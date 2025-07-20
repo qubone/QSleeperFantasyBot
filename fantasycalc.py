@@ -57,7 +57,8 @@ async def get_player_value(
                 text = await resp.text()
                 raise Exception(f"FantasyCalc API error {resp.status}: {text}")
             response = await resp.json()
-    
+    # '2027 Round 1'
+    # '2025 Pick 1.01'
     player_lookup = create_lookup_dict(response)
     # Try exact match first
     normalized_query = player_name.lower()

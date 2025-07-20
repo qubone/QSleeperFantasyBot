@@ -16,9 +16,20 @@
             "name": "Run FantasyCalc Script",
             "type": "debugpy",
             "request": "launch",
-            "program": "${workspaceFolder}/main.py",
+            "program": "${workspaceFolder}/cli_single_player_trade.py",
             "console": "integratedTerminal",
             "args": ["Tyreek Hill"]  // 👈 Change this for different tests
+        },
+        {
+            "name": "Run FantasyCalc Dynasty compare",
+            "type": "debugpy",
+            "request": "launch",
+            "program": "${workspaceFolder}/cli_dynasty_compare.py",
+            "console": "integratedTerminal",
+            "args": [
+                "--side-a", "Bijan Robinson", "2025 Round 2",
+                "--side-b", "Tyreek Hill", "2025 Round 1"
+            ]
         }
 
     ]
