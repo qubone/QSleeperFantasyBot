@@ -6,6 +6,8 @@ from logger import logger
 
 BASE_URL = "https://api.fantasycalc.com/values/current"
 
+_cached_asset_names: List[str] = []
+_asset_names_loaded = False
 
 def create_lookup_dict(players: List[Dict[str, Any]]) -> Dict[str, Player]:
     """
@@ -23,6 +25,37 @@ def create_lookup_dict(players: List[Dict[str, Any]]) -> Dict[str, Player]:
     elapsed = time.perf_counter() - start_time
     logger.debug(f"Player lookup dictionary built with {len(player_lookup)} entries in {elapsed:.6f} seconds")
     return player_lookup
+
+async def get_cached_asset_names(force: bool = False) -> List[str]:
+    global _cached_asset_names, _asset_names_loaded
+    if not _asset_names_loaded or force:
+        await fetch_asset_names()
+    return _cached_asset_names
+
+
+async def fetch_asset_names():
+    global _cached_asset_names, _asset_names_loaded
+    if _asset_names_loaded:
+        return  # Already fetched
+    params = {
+        "isDynasty": __import__('json').dumps(True),
+        "numQbs": str(1),
+        "numTeams": str(12),
+        "ppr": str(1),
+    }
+    async with aiohttp.ClientSession() as session:
+        async with session.get(BASE_URL, params=params) as resp:
+            if resp.status != 200:
+                text = await resp.text()
+                raise Exception(f"FantasyCalc API error {resp.status}: {text}")
+            response = await resp.json()
+            logger.debug(f"Fetched {len(response)} assets from FantasyCalc API")
+            _cached_asset_names = [
+                item["player"]["name"] for item in response if "player" in item and "name" in item["player"]
+            ]
+            logger.debug(f"Cached {_cached_asset_names[:10]}... ({len(_cached_asset_names)} total)")
+            _asset_names_loaded = True
+
 
 async def get_player_value(
     player_name: str,

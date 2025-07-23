@@ -1,9 +1,11 @@
 import discord
+from discord import app_commands, Interaction
 from discord.ext import commands
-from fantasycalc import get_player_value
+from fantasycalc import get_player_value, fetch_asset_names, get_cached_asset_names
 from dynasty_compare import dynasty_compare
 from dotenv import load_dotenv
 from messages import construct_trade_message
+from logger import logger
 import os
 
 load_dotenv()
@@ -14,13 +16,26 @@ intents.message_content = True  # Required for reading messages
 bot = commands.Bot(command_prefix="!", intents=intents)
 
 
+async def asset_autocomplete(interaction: discord.Interaction, current: str):
+    """Autocomplete function for asset names.
+    Fetches cached asset names and returns matches based on the current input. """
+    asset_names = await get_cached_asset_names()
+    if not asset_names:
+        logger.warning("No asset names available during autocomplete.")
+    matches = [
+        name for name in asset_names
+        if current.lower() in name.lower()
+    ][:25]
 
-
+    logger.debug(f"Autocomplete matches for '{current}': {matches}")
+    await interaction.response.autocomplete([app_commands.Choice(name=name, value=name) for name in matches])
 
 @bot.event
 async def on_ready():
+    logger.info("Bot starting up...")
+    await fetch_asset_names()
     await bot.tree.sync()
-    print(f"Logged in as {bot.user}")
+    logger.info(f"Logged in as {bot.user}")
 
 @bot.command(name="trade")
 async def trade(ctx: commands.Context, *, players_input: str):
@@ -51,7 +66,6 @@ async def trade(ctx: commands.Context, *, players_input: str):
 
 @bot.command(name="dynastytrade")
 async def compare_dynasty_trade(ctx: commands.Context, *, trade_assets: str):
-
     try:
         if "vs" not in trade_assets:
             await ctx.send("Format: `!dynastytrade <side A> vs <side B>`")
@@ -71,17 +85,19 @@ async def compare_dynasty_trade(ctx: commands.Context, *, trade_assets: str):
         await ctx.send(f"Error: {e}")
 
 @bot.tree.command(name="dynastytrade", description="Compare dynasty trade value between two sides.")
-@discord.app_commands.describe(
+@app_commands.describe(
     side_a="Comma-separated list of assets for side A",
     side_b="Comma-separated list of assets for side B"
 )
-async def compare_dynasty_trade_slash(interaction: discord.Interaction, side_a: str, side_b: str):
+@app_commands.autocomplete(
+    side_a=asset_autocomplete,
+    side_b=asset_autocomplete
+)
+async def compare_dynasty_trade_slash(interaction: Interaction, side_a: str, side_b: str):
         await interaction.response.defer()  # optional if it takes >3s
         side_a_list = [s.strip() for s in side_a.split(",")]
         side_b_list = [s.strip() for s in side_b.split(",")]
         result = await dynasty_compare(side_a_list, side_b_list)
         await interaction.followup.send(result)
-
-
 
 bot.run(str(TOKEN))

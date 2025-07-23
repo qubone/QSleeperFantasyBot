@@ -30,7 +30,15 @@
                 "--side-a", "Bijan Robinson", "2025 Round 2",
                 "--side-b", "Tyreek Hill", "2025 Round 1"
             ]
-        }
+        },
+        {
+        "name": "Run Discord Bot",
+        "type": "debugpy",
+        "request": "launch",
+        "program": "${workspaceFolder}/bot.py", // Change to your bot's entry file
+        "envFile": "${workspaceFolder}/.env",
+        "console": "integratedTerminal"
+        },
 
     ]
 }
