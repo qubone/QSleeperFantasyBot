@@ -1,6 +1,9 @@
-import asyncio
 import argparse
-from dynasty_compare import dynasty_compare
+import asyncio
+
+from src.dynasty_compare import dynasty_compare
+
+
 async def main(side_a, side_b):
     result = await dynasty_compare(side_a, side_b)
     print(result)

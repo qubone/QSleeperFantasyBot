@@ -1,4 +1,4 @@
-""" This module provides utility functions for constructing formatted trade evaluation messages
+"""This module provides utility functions for constructing formatted trade evaluation messages
 for Discord, specifically for fantasy sports scenarios. It includes functions to generate
 messages comparing two players or two sides of a dynasty trade, displaying their values
 and indicating which side has the advantage.
@@ -11,7 +11,7 @@ Functions:
         Constructs a formatted message comparing two sides of a dynasty trade,
         including detailed breakdowns and indicating which side has the advantage.
 """
-from player_model import Player
+from src.player_model import Player
 from typing import List, Tuple
 def construct_trade_message(player_a: Player, player_b: Player) -> str:
     """
@@ -43,7 +43,7 @@ def format_side(details):
         Returns:
             str: A string with each pair on a separate line, formatted for display.
         """
-        return "\n".join([f"  - {name}: {val}" for name, val in details])
+        return "\n".join([f" - {name}: {val}" for name, val in details])
 
 def construct_dynasty_trade_message(
     total_a: int,

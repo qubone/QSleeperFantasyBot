@@ -13,7 +13,31 @@ dependencies = [
 ]
 
 [dependency-groups]
+dev = [
+    "isort>=6.0.1",
+    "ruff>=0.12.5",
+]
 test = [
     "pytest>=8.4.1",
     "pytest-asyncio>=1.1.0",
+    "pytest-cov>=6.2.1",
 ]
+
+[tool.pytest.ini_options]
+pythonpath = ["src"]
+addopts = "--cov=. --cov-report=term-missing --cov-report=html"
+testpaths = ["test"]
+
+[tool.coverage.run]
+branch = true
+source = ["src"]
+
+[tool.coverage.report]
+show_missing = true
+fail_under = 40 #TODO: Increase this to 100% when all tests are complete
+
+[tool.coverage.html]
+directory = "coverage_html_report"
+
+[tool.ruff]
+line-length = 119

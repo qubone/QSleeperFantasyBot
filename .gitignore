@@ -11,3 +11,6 @@ wheels/
 
 # Virtual environments
 .venv
+
+# Test coverage
+coverage_html_report

@@ -17,11 +17,13 @@ Dependencies:
 Typical usage:
     Use the provided asynchronous functions to fetch player values and asset names for fantasy football applications, supporting customizable league settings.
 """
-import aiohttp
 import time
-from typing import Dict, Any, List
-from player_model import create_player_from_dict, Player
+from typing import Any, Dict, List
+
+import aiohttp
+
 from logger import logger
+from src.player_model import Player, create_player_from_dict
 
 BASE_URL = "https://api.fantasycalc.com/values/current"
 

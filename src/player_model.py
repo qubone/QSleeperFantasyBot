@@ -7,7 +7,8 @@ Functions:
         Creates a Player instance from a dictionary, parsing nested player information and mapping dictionary fields to dataclass attributes.
 """
 from dataclasses import dataclass
-from typing import Optional, Dict, Any
+from typing import Any, Dict, Optional
+
 
 @dataclass
 class Info:

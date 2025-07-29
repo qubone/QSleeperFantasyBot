@@ -19,15 +19,18 @@ Commands:
 - /dynastytrade: Slash command version with autocomplete for asset names.
 """
 
-import discord
-from discord import app_commands, Interaction
-from discord.ext import commands
-from fantasycalc import get_player_value, fetch_asset_names, get_cached_asset_names
-from dynasty_compare import dynasty_compare
-from dotenv import load_dotenv
-from messages import construct_trade_message
-from logger import logger
 import os
+
+import discord
+from discord import Interaction, app_commands
+from discord.ext import commands
+from dotenv import load_dotenv
+
+from src.dynasty_compare import dynasty_compare
+from src.fantasycalc import (fetch_asset_names, get_cached_asset_names,
+                         get_player_value)
+from logger import logger
+from src.messages import construct_trade_message
 
 load_dotenv()
 TOKEN = os.getenv("DISCORD_TOKEN")
@@ -43,13 +46,25 @@ async def asset_autocomplete(interaction: discord.Interaction, current: str):
     asset_names = await get_cached_asset_names()
     if not asset_names:
         logger.warning("No asset names available during autocomplete.")
+    parts = current.split(",")
+    last_part = parts[-1].strip()
     matches = [
         name for name in asset_names
-        if current.lower() in name.lower()
+        if last_part.lower() in name.lower()
     ][:25]
 
+    base = ", ".join(p.strip() for p in parts[:-1] if p.strip())
+
     logger.debug(f"Autocomplete matches for '{current}': {matches}")
-    await interaction.response.autocomplete([app_commands.Choice(name=name, value=name) for name in matches])
+    await interaction.response.autocomplete(
+        [
+            app_commands.Choice(
+                name=f"{base}, {match}" if base else match,
+                value=f"{base}, {match}" if base else match
+            ) 
+            for match in matches
+        ]
+    )
 
 @bot.event
 async def on_ready():

@@ -1,6 +1,8 @@
-import asyncio
 import argparse
-from fantasycalc import get_player_value  # Adjust the import if needed
+import asyncio
+
+from src.fantasycalc import get_player_value
+
 
 async def main(player_name: str):
     player = await get_player_value(player_name)

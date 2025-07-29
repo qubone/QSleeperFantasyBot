@@ -6,9 +6,12 @@ Functions:
     dynasty_compare(side_a: List[str], side_b: List) -> str
         Asynchronously compares two lists of dynasty assets and returns a formatted trade comparison message.
 """
-from fantasycalc import get_player_value
 from typing import List, Tuple
-from messages import construct_dynasty_trade_message
+
+from src.fantasycalc import get_player_value
+from src.messages import construct_dynasty_trade_message
+
+
 async def dynasty_compare(side_a: List[str], side_b: List):
     """Compare two sides of a dynasty trade and return a formatted message.
     Args:
