@@ -1,8 +1,25 @@
+"""This module provides functionality to compare two sides of a dynasty fantasy football trade.
+It calculates the total value of assets on each side using player values from the fantasycalc module,
+and returns a formatted message summarizing the trade comparison, including the total values for each side,
+a breakdown of individual asset values, and which side holds the advantage.
+Functions:
+    dynasty_compare(side_a: List[str], side_b: List) -> str
+        Asynchronously compares two lists of dynasty assets and returns a formatted trade comparison message.
+"""
 from fantasycalc import get_player_value
-async def dynasty_compare(side_a: list, side_b: list):
-    async def total_value(assets):
+from typing import List, Tuple
+from messages import construct_dynasty_trade_message
+async def dynasty_compare(side_a: List[str], side_b: List):
+    """Compare two sides of a dynasty trade and return a formatted message.
+    Args:
+        side_a (List[str]): List of assets for side A.      
+        side_b (List[str]): List of assets for side B.
+    Returns:
+        str: Formatted message with total values and advantage.
+    """
+    async def total_value(assets: List[str]) -> Tuple[int, List[Tuple[str, int]]]:
         total = 0
-        asset_details = []
+        asset_details: List[Tuple[str, int]] = []
         for name in assets:
             player = await get_player_value(name, is_dynasty=True)
             if player:
@@ -16,17 +33,4 @@ async def dynasty_compare(side_a: list, side_b: list):
     total_a, details_a = await total_value(side_a)
     total_b, details_b = await total_value(side_b)
 
-    advantage = "Side A" if total_a > total_b else "Side B"
-    diff = abs(total_a - total_b)
-
-    def format_side(details):
-        return "\n".join([f"  - {name}: {val}" for name, val in details])
-
-    result = (
-        f"🔁 Dynasty Trade Comparison\n\n"
-        f"🅰️ Side A Total: {total_a}\n{format_side(details_a)}\n\n"
-        f"🅱️ Side B Total: {total_b}\n{format_side(details_b)}\n\n"
-        f"➡️ **Advantage:** {advantage} by {diff} points"
-    )
-
-    return result
+    return construct_dynasty_trade_message(total_a, details_a, total_b, details_b)

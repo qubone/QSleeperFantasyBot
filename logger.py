@@ -1,3 +1,11 @@
+"""This module sets up a logger for the fantasy bot application.
+It configures a logger named 'fantasy_bot' with DEBUG level logging by default,
+and outputs log messages to the console with a specific format that includes
+the timestamp, log level, and message.
+Usage:
+    logger.info("This is an info message.")
+    logger.error("This is an error message.")
+"""
 import logging
 
 # Create a logger

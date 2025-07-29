@@ -1,3 +1,22 @@
+"""This module provides asynchronous utilities for fetching and processing player value data from the FantasyCalc API.
+Functions:
+    - create_lookup_dict(players): Builds a lookup dictionary of Player objects keyed by normalized player names.
+    - get_cached_asset_names(force=False): Retrieves and caches the list of asset (player) names from the FantasyCalc API.
+    - fetch_asset_names(): Fetches and caches asset names from the FantasyCalc API if not already loaded.
+    - get_player_value(player_name, is_dynasty=False, num_qbs=1, num_teams=12, ppr=1): Fetches a Player object with value information from the FantasyCalc API based on player name and league settings.
+Globals:
+    - BASE_URL: The FantasyCalc API endpoint for current player values.
+    - _cached_asset_names: Cached list of asset names from the API.
+    - _asset_names_loaded: Boolean flag indicating whether asset names have been loaded.
+Dependencies:
+    - aiohttp: For asynchronous HTTP requests.
+    - time: For performance measurement.
+    - typing: For type annotations.
+    - player_model: For Player model and creation utility.
+    - logger: For logging debug information.
+Typical usage:
+    Use the provided asynchronous functions to fetch player values and asset names for fantasy football applications, supporting customizable league settings.
+"""
 import aiohttp
 import time
 from typing import Dict, Any, List
@@ -64,8 +83,7 @@ async def get_player_value(
     num_teams: int = 12,
     ppr: int = 1,
 ) -> Player | None:
-    """
-    Fetches and returns a player object with value information from the FantasyCalc API based on the provided player name and league settings.
+    """Fetches and returns a player object with value information from the FantasyCalc API based on the provided player name and league settings.
     Args:
         player_name (str): The name of the player to search for.
         is_dynasty (bool, optional): Whether the league is a dynasty league. Defaults to False.
@@ -90,8 +108,6 @@ async def get_player_value(
                 text = await resp.text()
                 raise Exception(f"FantasyCalc API error {resp.status}: {text}")
             response = await resp.json()
-    # '2027 Round 1'
-    # '2025 Pick 1.01'
     player_lookup = create_lookup_dict(response)
     # Try exact match first
     normalized_query = player_name.lower()

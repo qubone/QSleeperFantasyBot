@@ -1,9 +1,8 @@
 import asyncio
 import argparse
-from fantasycalc import get_player_value  # Adjust import if needed
-from dynasty_compare import compare_dynasty_trade  # Assuming this is where the function is defined
+from dynasty_compare import dynasty_compare
 async def main(side_a, side_b):
-    result = await compare_dynasty_trade(side_a, side_b, get_player_value)
+    result = await dynasty_compare(side_a, side_b)
     print(result)
 
 if __name__ == "__main__":
