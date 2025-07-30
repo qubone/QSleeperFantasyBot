@@ -15,6 +15,7 @@ dependencies = [
 [dependency-groups]
 dev = [
     "isort>=6.0.1",
+    "mypy>=1.17.0",
     "ruff>=0.12.5",
 ]
 test = [
@@ -41,3 +42,6 @@ directory = "coverage_html_report"
 
 [tool.ruff]
 line-length = 119
+
+#[tool.mypy]
+#strict=true

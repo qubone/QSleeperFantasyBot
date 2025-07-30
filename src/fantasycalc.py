@@ -22,7 +22,7 @@ from typing import Any, Dict, List
 
 import aiohttp
 
-from logger import logger
+from src.logger import logger
 from src.player_model import Player, create_player_from_dict
 
 BASE_URL = "https://api.fantasycalc.com/values/current"

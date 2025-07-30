@@ -29,7 +29,7 @@ from dotenv import load_dotenv
 from src.dynasty_compare import dynasty_compare
 from src.fantasycalc import (fetch_asset_names, get_cached_asset_names,
                          get_player_value)
-from logger import logger
+from src.logger import logger
 from src.messages import construct_trade_message
 
 load_dotenv()
