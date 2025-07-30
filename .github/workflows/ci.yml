@@ -41,7 +41,7 @@ jobs:
   
     - name: Run mypy type checks
       run: |
-        uv run mypy src tests
+        uv run mypy src test
     #- name: Upload coverage to GitHub (optional)
     #  uses: actions/upload-artifact@v4
     #  with:
