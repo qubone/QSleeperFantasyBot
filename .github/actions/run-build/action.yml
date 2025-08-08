@@ -3,5 +3,9 @@ description: Build the Python package using uv
 runs:
   using: composite
   steps:
-    - run: uv build --format wheel --output dist
+    - run: uv build
+      name: Build Package
+      shell: bash
+    - run: uv run python -c "import qsleeperfantasybot; print('Package imported successfully')"
+      name: Test import package
       shell: bash
