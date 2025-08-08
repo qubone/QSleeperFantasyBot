@@ -8,7 +8,7 @@ import pytest
 from typing import Dict, Any
 
 
-@pytest.fixture
+@pytest.fixture # type: ignore[misc]
 def player_a_dict() -> Dict[str, Any]:
     return {
         "player": {
@@ -47,7 +47,7 @@ def player_a_dict() -> Dict[str, Any]:
     }
 
 
-@pytest.fixture
+@pytest.fixture # type: ignore[misc]
 def player_b_dict() -> Dict[str, Any]:
     return {
         "player": {
@@ -86,7 +86,7 @@ def player_b_dict() -> Dict[str, Any]:
     }
 
 
-@pytest.fixture
+@pytest.fixture # type: ignore[misc]
 def player_no_value_dict() -> Dict[str, Any]:
     return {
         "player": {
@@ -125,7 +125,7 @@ def player_no_value_dict() -> Dict[str, Any]:
     }
 
 
-@pytest.fixture
+@pytest.fixture # type: ignore[misc]
 def player_no_name_dict() -> Dict[str, Any]:
     return {
         "player": {

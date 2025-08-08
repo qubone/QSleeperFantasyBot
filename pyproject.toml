@@ -76,6 +76,8 @@ ignore = [
 strict=true
 #explicit_package_bases = true
 #packages = ["qsleeperfantasybot", "test"]
+ignore_missing_imports = true
+
 
 [tool.setuptools_scm]
 version_scheme = "no-guess-dev"
