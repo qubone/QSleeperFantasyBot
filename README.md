@@ -8,10 +8,10 @@ Single asset trading, Player A vs Player B comparision.
 Dynasty multi asset trading, Player A, 2028 Round 1 vs Player B, 2026 Round 2
 
 # Setup
-Invite the bot to your 
+Invite the bot to your server (link will be provided soon)
 
 # How to use
-/dynastycompare side_a, side_b
+/dynastytrade side_a, side_b
 
 # Autocompletion
 When using dynasty trade command you will retrieve the list of all available assets.
