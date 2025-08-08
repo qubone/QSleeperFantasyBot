@@ -10,6 +10,7 @@ inputs:
 runs:
   using: "composite"
   steps:
+    - name: Bump Patch Version
       run: |
         uv run scripts/bump_patch.py \
           --version-file VERSION \
