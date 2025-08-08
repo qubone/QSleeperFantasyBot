@@ -1,0 +1,17 @@
+name: Bump Patch and Tag
+description: Bump the patch version based on VERSION file and create a git tag
+
+inputs:
+  dry-run:
+    required: false
+    default: "false"
+    description: Perform a dry run (no tag creation)
+
+runs:
+  using: "composite"
+  steps:
+      run: |
+        uv run scripts/bump_patch.py \
+          --version-file VERSION \
+          ${{ inputs.dry-run == 'true' && '--dry-run' || '' }}
+      shell: bash

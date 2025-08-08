@@ -1,0 +1,7 @@
+name: Run Tests
+description: Run pytest
+runs:
+  using: composite
+  steps:
+    - run: uv run pytest --cov=src
+      shell: bash

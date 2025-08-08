@@ -1,0 +1,81 @@
+[build-system]
+requires = ["setuptools>=67", "setuptools_scm[toml]>=7", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "qsleeperfantasybot"
+dynamic = ["version"]
+description = "Discord bot for fantasy football trade analysis"
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = [
+    "aiohttp>=3.12.14",
+    "discord>=2.3.2",
+    "discord-py>=2.5.2",
+    "python-dotenv>=1.1.1",
+    "requests>=2.32.4",
+]
+
+# uv sync --all-extras
+[project.optional-dependencies]
+
+lint = [
+    "ruff>=0.12.5",
+]
+typecheck = [
+    "mypy>=1.17.0",
+]
+test = [
+    "pytest>=8.4.1",
+    "pytest-asyncio>=1.1.0",
+    "pytest-cov>=6.2.1",
+]
+
+[project.scripts]
+qsleeperbot = "qsleeperfantasybot.bot:main"  # CLI entry point for the bot
+
+[tool.pytest.ini_options]
+pythonpath = ["src"]
+addopts = "--cov=. --cov-report=term-missing --cov-report=html"
+testpaths = ["test"]
+
+[tool.coverage.run]
+branch = true
+source = ["src"]
+
+[tool.coverage.report]
+show_missing = true
+fail_under = 40 #TODO: Increase this to 100% when all tests are complete
+
+[tool.coverage.html]
+directory = "coverage_html_report"
+
+[tool.ruff]
+line-length = 119
+
+[tool.ruff.lint]
+select = [
+    "F",  # Pyflakes
+    "E",  # PEP 8
+    "W",  # PEP 8 warnings
+    "C",  # Complexity
+    "N",  # Naming conventions
+    "T",  # Type hints
+]
+ignore = [
+    "N815",  # Variable in class scope should not be mixedCase
+]
+
+[tool.mypy]
+strict=true
+#TODO: Investigate explicit_package_bases = true
+#TODO: Investigate packages = ["qsleeperfantasybot", "test"]
+ignore_missing_imports = true
+
+[tool.setuptools_scm]
+version_scheme = "no-guess-dev"
+local_scheme = "node-and-date"
+#TODO: Investigate version_file = "VERSION"
+
+[tool.setuptools.package-data]
+"qsleeperfantasybot" = ["py.typed"]

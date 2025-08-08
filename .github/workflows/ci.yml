@@ -1,0 +1,67 @@
+name: CI
+
+on:
+  pull_request:
+    branches: [main]
+  push:
+    branches: [main]
+
+env:
+  PYTHON_VERSION: "3.12"
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: ./.github/actions/prepare-uv-environment
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+          dependency-groups: "lint"
+      - uses: ./.github/actions/run-lint
+
+  typecheck:
+    needs: [lint]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: ./.github/actions/prepare-uv-environment
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+          dependency-groups: "typecheck"
+      - uses: ./.github/actions/run-typecheck
+
+  test:
+    needs: typecheck
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: ./.github/actions/prepare-uv-environment
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+          dependency-groups: "test"
+      - uses: ./.github/actions/run-tests
+
+  build:
+    needs: test
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: ./.github/actions/prepare-uv-environment
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+      - uses: ./.github/actions/run-build
+
+  bump-patch:
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: ./.github/actions/prepare-uv-environment
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+      - uses: ./.github/actions/bump-patch-and-tag
+        with:
+          dry-run: ${{ github.event_name == 'pull_request' }}
+
