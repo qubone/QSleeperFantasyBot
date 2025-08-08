@@ -1,7 +1,15 @@
+"""This file contains fixtures for testing player data in a fantasy football context.
+It provides mock player dictionaries that can be used in unit tests to verify the functionality of
+the `create_lookup_dict` function and other related functionalities.
+"""
+
 import pytest
 
+from typing import Dict, Any
+
+
 @pytest.fixture
-def player_a_dict():
+def player_a_dict() -> Dict[str, Any]:
     return {
         "player": {
             "id": 5856,
@@ -17,7 +25,7 @@ def player_a_dict():
             "maybeAge": 25.4,
             "maybeYoe": 4,
             "espnId": "4362628",
-            "fleaflickerId": "16250"
+            "fleaflickerId": "16250",
         },
         "value": 10152,
         "overallRank": 1,
@@ -35,11 +43,12 @@ def player_a_dict():
         "starter": False,
         "maybeTier": 1,
         "maybeAdp": None,
-        "maybeTradeFrequency": None
+        "maybeTradeFrequency": None,
     }
 
+
 @pytest.fixture
-def player_b_dict():
+def player_b_dict() -> Dict[str, Any]:
     return {
         "player": {
             "id": 5856,
@@ -55,7 +64,7 @@ def player_b_dict():
             "maybeAge": 25.4,
             "maybeYoe": 4,
             "espnId": "4362628",
-            "fleaflickerId": "16250"
+            "fleaflickerId": "16250",
         },
         "value": 12000,
         "overallRank": 1,
@@ -73,11 +82,12 @@ def player_b_dict():
         "starter": False,
         "maybeTier": 1,
         "maybeAdp": None,
-        "maybeTradeFrequency": None
+        "maybeTradeFrequency": None,
     }
 
+
 @pytest.fixture
-def player_no_value_dict():
+def player_no_value_dict() -> Dict[str, Any]:
     return {
         "player": {
             "id": 5856,
@@ -93,7 +103,7 @@ def player_no_value_dict():
             "maybeAge": 25.4,
             "maybeYoe": 4,
             "espnId": "4362628",
-            "fleaflickerId": "16250"
+            "fleaflickerId": "16250",
         },
         "value": None,
         "overallRank": 1,
@@ -111,11 +121,12 @@ def player_no_value_dict():
         "starter": False,
         "maybeTier": 1,
         "maybeAdp": None,
-        "maybeTradeFrequency": None
+        "maybeTradeFrequency": None,
     }
 
+
 @pytest.fixture
-def player_no_name_dict():
+def player_no_name_dict() -> Dict[str, Any]:
     return {
         "player": {
             "id": 5856,
@@ -131,7 +142,7 @@ def player_no_name_dict():
             "maybeAge": 25.4,
             "maybeYoe": 4,
             "espnId": "4362628",
-            "fleaflickerId": "16250"
+            "fleaflickerId": "16250",
         },
         "value": 1,
         "overallRank": 1,
@@ -149,5 +160,5 @@ def player_no_name_dict():
         "starter": False,
         "maybeTier": 1,
         "maybeAdp": None,
-        "maybeTradeFrequency": None
+        "maybeTradeFrequency": None,
     }

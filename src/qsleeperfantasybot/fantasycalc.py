@@ -1,9 +1,11 @@
 """This module provides asynchronous utilities for fetching and processing player value data from the FantasyCalc API.
 Functions:
     - create_lookup_dict(players): Builds a lookup dictionary of Player objects keyed by normalized player names.
-    - get_cached_asset_names(force=False): Retrieves and caches the list of asset (player) names from the FantasyCalc API.
+    - get_cached_asset_names(force=False): Retrieves and caches the list of asset (player) names from
+      the FantasyCalc API.
     - fetch_asset_names(): Fetches and caches asset names from the FantasyCalc API if not already loaded.
-    - get_player_value(player_name, is_dynasty=False, num_qbs=1, num_teams=12, ppr=1): Fetches a Player object with value information from the FantasyCalc API based on player name and league settings.
+    - get_player_value(player_name, is_dynasty=False, num_qbs=1, num_teams=12, ppr=1): Fetches a Player object with
+      value information from the FantasyCalc API based on player name and league settings.
 Globals:
     - BASE_URL: The FantasyCalc API endpoint for current player values.
     - _cached_asset_names: Cached list of asset names from the API.
@@ -15,20 +17,23 @@ Dependencies:
     - player_model: For Player model and creation utility.
     - logger: For logging debug information.
 Typical usage:
-    Use the provided asynchronous functions to fetch player values and asset names for fantasy football applications, supporting customizable league settings.
+    Use the provided asynchronous functions to fetch player values and asset names for fantasy football
+    applications, supporting customizable league settings.
 """
+
 import time
 from typing import Any, Dict, List
 
 import aiohttp
 
-from src.logger import logger
-from src.player_model import Player, create_player_from_dict
+from qsleeperfantasybot.logger import logger
+from qsleeperfantasybot.player_model import Player, create_player_from_dict
 
 BASE_URL = "https://api.fantasycalc.com/values/current"
 
 _cached_asset_names: List[str] = []
 _asset_names_loaded = False
+
 
 def create_lookup_dict(players: List[Dict[str, Any]]) -> Dict[str, Player]:
     """
@@ -47,6 +52,7 @@ def create_lookup_dict(players: List[Dict[str, Any]]) -> Dict[str, Player]:
     logger.debug(f"Player lookup dictionary built with {len(player_lookup)} entries in {elapsed:.6f} seconds")
     return player_lookup
 
+
 async def get_cached_asset_names(force: bool = False) -> List[str]:
     global _cached_asset_names, _asset_names_loaded
     if not _asset_names_loaded or force:
@@ -54,12 +60,12 @@ async def get_cached_asset_names(force: bool = False) -> List[str]:
     return _cached_asset_names
 
 
-async def fetch_asset_names():
+async def fetch_asset_names() -> None:
     global _cached_asset_names, _asset_names_loaded
     if _asset_names_loaded:
         return  # Already fetched
     params = {
-        "isDynasty": __import__('json').dumps(True),
+        "isDynasty": __import__("json").dumps(True),
         "numQbs": str(1),
         "numTeams": str(12),
         "ppr": str(1),
@@ -85,7 +91,8 @@ async def get_player_value(
     num_teams: int = 12,
     ppr: int = 1,
 ) -> Player | None:
-    """Fetches and returns a player object with value information from the FantasyCalc API based on the provided player name and league settings.
+    """Fetches and returns a player object with value information from the FantasyCalc API based on the provided player
+       name and league settings.
     Args:
         player_name (str): The name of the player to search for.
         is_dynasty (bool, optional): Whether the league is a dynasty league. Defaults to False.
@@ -98,7 +105,7 @@ async def get_player_value(
         Exception: If the FantasyCalc API returns a non-200 status code.
     """
     params = {
-        "isDynasty": __import__('json').dumps(is_dynasty),
+        "isDynasty": __import__("json").dumps(is_dynasty),
         "numQbs": str(num_qbs),
         "numTeams": str(num_teams),
         "ppr": str(ppr),

@@ -1,0 +1,54 @@
+#TODO: Implement release notes generation
+
+name: Bump Patch and Tag
+description: Bump the patch version based on VERSION file, create a git tag, and publish a GitHub release
+
+inputs:
+  dry-run:
+    required: false
+    default: "false"
+    description: Perform a dry run (no tag creation)
+
+runs:
+  using: "composite"
+  steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+      with:
+        fetch-depth: 0  # needed so git tags are available
+
+    - name: Set up Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: "3.12"
+
+    - name: Install GitHub CLI
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y gh
+      shell: bash
+
+    - name: Bump patch version
+      id: bump
+      run: |
+        TAG=$(python scripts/bump_patch.py \
+          --version-file VERSION \
+          $([ "${{ inputs.dry-run }}" == "true" ] && echo "--dry-run" || true))
+        echo "tag=$TAG" >> $GITHUB_OUTPUT
+      shell: bash
+
+    - name: Create Git tag and push
+      if: inputs.dry-run == 'false'
+      run: |
+        python scripts/bump_patch.py --version-file VERSION
+      shell: bash
+
+    - name: Create GitHub Release
+      if: inputs.dry-run == 'false'
+      env:
+        GITHUB_TOKEN: ${{ github.token }}
+      run: |
+        gh release create "${{ steps.bump.outputs.tag }}" \
+          --title "Release ${{ steps.bump.outputs.tag }}" \
+          --generate-notes
+      shell: bash

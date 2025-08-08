@@ -1,0 +1,7 @@
+name: Build Package
+description: Build the Python package using uv
+runs:
+  using: composite
+  steps:
+    - run: uv build --format wheel --output dist
+      shell: bash

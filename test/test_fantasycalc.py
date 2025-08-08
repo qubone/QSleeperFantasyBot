@@ -1,15 +1,16 @@
+"""This file contains unit tests for the `create_lookup_dict` function in the `qsleeperfantasybot.fantasycalc` module.
+It tests the functionality of creating a lookup dictionary from player data dictionaries.
+It verifies that the function correctly processes player dictionaries, handles missing information,
+and manages duplicate player names.
+"""
 
 from typing import Any, Dict
 
-from src.fantasycalc import create_lookup_dict
-from src.player_model import Player
+from qsleeperfantasybot.fantasycalc import create_lookup_dict
+from qsleeperfantasybot.player_model import Player
 
 
-
-def test_create_lookup_dict_basic(
-    player_a_dict: Dict[str, Any],
-    player_b_dict: Dict[str, Any]
-) -> None:
+def test_create_lookup_dict_basic(player_a_dict: Dict[str, Any], player_b_dict: Dict[str, Any]) -> None:
     """Test the basic functionality of the `create_lookup_dict` function.
     This test verifies that:
     - The lookup dictionary contains keys for each player's name in lowercase.
@@ -32,9 +33,7 @@ def test_create_lookup_dict_basic(
 
 
 def test_create_lookup_dict_skips_missing_info_or_name(
-    player_a_dict: Dict[str, Any],
-    player_no_value_dict: Dict[str, Any],
-    player_no_name_dict: Dict[str, Any]
+    player_a_dict: Dict[str, Any], player_no_value_dict: Dict[str, Any], player_no_name_dict: Dict[str, Any]
 ) -> None:
     """Test that `create_lookup_dict` skips players with missing `info` or missing `name` attributes.
     This test verifies that:
@@ -43,14 +42,13 @@ def test_create_lookup_dict_skips_missing_info_or_name(
     - The resulting lookup dictionary contains only the valid player(s).
     """
 
-    lookup: Dict[str, Player] = create_lookup_dict([
-        player_a_dict, player_no_value_dict, player_no_name_dict
-    ])
+    lookup: Dict[str, Player] = create_lookup_dict([player_a_dict, player_no_value_dict, player_no_name_dict])
 
     assert "player a" in lookup
     assert lookup["player a"].info.name == "Player A"
     assert lookup["player b"].value is None
     assert len(lookup) == 2
+
 
 def test_create_lookup_dict_overwrites_duplicates(
     player_a_dict: Dict[str, Any],

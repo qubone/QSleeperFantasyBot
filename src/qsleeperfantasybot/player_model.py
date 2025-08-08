@@ -1,11 +1,15 @@
 """This module defines data models for representing fantasy football players and their associated metadata.
 Classes:
-    Info: Data class representing detailed player information, including IDs from various platforms, personal details, and team information.
-    Player: Data class representing a fantasy football player, including their Info, value metrics, rankings, trends, and other fantasy-related attributes.
+    Info: Data class representing detailed player information, including IDs from various platforms, personal details,
+    and team information.
+    Player: Data class representing a fantasy football player, including their Info, value metrics, rankings, trends,
+    and other fantasy-related attributes.
 Functions:
     create_player_from_dict(data: dict) -> Player:
-        Creates a Player instance from a dictionary, parsing nested player information and mapping dictionary fields to dataclass attributes.
+    Creates a Player instance from a dictionary, parsing nested player information and mapping dictionary fields to
+    dataclass attributes.
 """
+
 from dataclasses import dataclass
 from typing import Any, Dict, Optional
 
@@ -31,6 +35,7 @@ class Info:
         espnId (Optional[str]): ESPN player ID, if available.
         fleaflickerId (Optional[str]): Fleaflicker platform player ID, if available.
     """
+
     id: int
     name: str
     mflId: Optional[str]
@@ -45,6 +50,7 @@ class Info:
     maybeYoe: Optional[int]
     espnId: Optional[str]
     fleaflickerId: Optional[str]
+
 
 @dataclass
 class Player:
@@ -71,6 +77,7 @@ class Player:
         maybeAdp (Optional[int]): The player's average draft position, if available.
         maybeTradeFrequency (Optional[int]): The player's trade frequency, if available.
     """
+
     info: Info
     value: int
     overallRank: int
@@ -89,6 +96,7 @@ class Player:
     maybeTier: Optional[int]
     maybeAdp: Optional[int]
     maybeTradeFrequency: Optional[int]
+
 
 def create_player_from_dict(data: Dict[str, Any]) -> Player:
     """

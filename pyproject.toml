@@ -1,7 +1,11 @@
+[build-system]
+requires = ["setuptools>=67", "setuptools_scm[toml]>=7", "wheel"]
+build-backend = "setuptools.build_meta"
+
 [project]
-name = "q-sleeper-fantasy-bot"
-version = "0.1.0"
-description = "Add your description here"
+name = "qsleeperfantasybot"
+dynamic = ["version"]
+description = "Discord bot for fantasy football trade analysis"
 readme = "README.md"
 requires-python = ">=3.12"
 dependencies = [
@@ -12,17 +16,29 @@ dependencies = [
     "requests>=2.32.4",
 ]
 
-[dependency-groups]
-dev = [
-    "isort>=6.0.1",
-    "mypy>=1.17.0",
+# uv sync --all-extras
+[project.optional-dependencies]
+docs = [
+    "mkdocs>=1.5.3",
+    "mkdocs-material>=9.4.6",
+    "mkdocs-minify-plugin>=0.8.0",
+    "mkdocs-redirects>=1.0.0",
+]
+# uv sync --extra lint
+lint = [
     "ruff>=0.12.5",
+]
+typecheck = [
+    "mypy>=1.17.0",
 ]
 test = [
     "pytest>=8.4.1",
     "pytest-asyncio>=1.1.0",
     "pytest-cov>=6.2.1",
 ]
+
+[project.scripts]
+qsleeperbot = "qsleeperfantasybot.bot:main"  # If you want a CLI entry point
 
 [tool.pytest.ini_options]
 pythonpath = ["src"]
@@ -43,5 +59,28 @@ directory = "coverage_html_report"
 [tool.ruff]
 line-length = 119
 
-#[tool.mypy]
-#strict=true
+[tool.ruff.lint]
+select = [
+    "F",  # Pyflakes
+    "E",  # PEP 8
+    "W",  # PEP 8 warnings
+    "C",  # Complexity
+    "N",  # Naming conventions
+    "T",  # Type hints
+]
+ignore = [
+    "N815",  # Variable in class scope should not be mixedCase
+]
+
+[tool.mypy]
+strict=true
+explicit_package_bases = true
+#packages = ["qsleeperfantasybot", "test"]
+
+[tool.setuptools_scm]
+version_scheme = "no-guess-dev"
+local_scheme = "node-and-date"
+#version_file = "VERSION"
+
+[tool.setuptools.package-data]
+"qsleeperfantasybot" = ["py.typed"]

@@ -1,0 +1,7 @@
+name: Run Typecheck
+description: Run mypy
+runs:
+  using: composite
+  steps:
+    - run: uv run mypy src test
+      shell: bash

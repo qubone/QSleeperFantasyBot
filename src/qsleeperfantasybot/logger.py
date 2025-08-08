@@ -6,6 +6,7 @@ Usage:
     logger.info("This is an info message.")
     logger.error("This is an error message.")
 """
+
 import logging
 
 # Create a logger
