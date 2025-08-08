@@ -74,7 +74,7 @@ ignore = [
 
 [tool.mypy]
 strict=true
-explicit_package_bases = true
+#explicit_package_bases = true
 #packages = ["qsleeperfantasybot", "test"]
 
 [tool.setuptools_scm]
