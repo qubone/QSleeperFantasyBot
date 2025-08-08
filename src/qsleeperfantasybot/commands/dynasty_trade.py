@@ -17,4 +17,4 @@ def setup(bot: commands.Bot) -> None:
         side_a_list = [s.strip() for s in side_a.split(",")]
         side_b_list = [s.strip() for s in side_b.split(",")]
         result = await dynasty_compare(side_a_list, side_b_list)
-        await interaction.followup.send(result)
+        await interaction.followup.send(result, ephemeral=True)

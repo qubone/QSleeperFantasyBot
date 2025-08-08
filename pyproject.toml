@@ -18,13 +18,7 @@ dependencies = [
 
 # uv sync --all-extras
 [project.optional-dependencies]
-docs = [
-    "mkdocs>=1.5.3",
-    "mkdocs-material>=9.4.6",
-    "mkdocs-minify-plugin>=0.8.0",
-    "mkdocs-redirects>=1.0.0",
-]
-# uv sync --extra lint
+
 lint = [
     "ruff>=0.12.5",
 ]
@@ -38,7 +32,7 @@ test = [
 ]
 
 [project.scripts]
-qsleeperbot = "qsleeperfantasybot.bot:main"  # If you want a CLI entry point
+qsleeperbot = "qsleeperfantasybot.bot:main"  # CLI entry point for the bot
 
 [tool.pytest.ini_options]
 pythonpath = ["src"]
@@ -74,15 +68,14 @@ ignore = [
 
 [tool.mypy]
 strict=true
-#explicit_package_bases = true
-#packages = ["qsleeperfantasybot", "test"]
+#TODO: Investigate explicit_package_bases = true
+#TODO: Investigate packages = ["qsleeperfantasybot", "test"]
 ignore_missing_imports = true
-
 
 [tool.setuptools_scm]
 version_scheme = "no-guess-dev"
 local_scheme = "node-and-date"
-#version_file = "VERSION"
+#TODO: Investigate version_file = "VERSION"
 
 [tool.setuptools.package-data]
 "qsleeperfantasybot" = ["py.typed"]

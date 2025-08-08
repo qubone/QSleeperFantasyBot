@@ -11,7 +11,10 @@ from typing import List
 
 async def asset_autocomplete(interaction: Interaction, current: str) -> List[app_commands.Choice[str]]:
     """Autocomplete function for asset names.
-    Fetches cached asset names and returns matches based on the current input."""
+    Fetches cached asset names and returns matches based on the current input.
+    Args:
+        interaction (Interaction): The interaction context.
+        current (str): The current input string for autocomplete."""
     asset_names = await get_cached_asset_names()
     if not asset_names:
         logger.warning("No asset names available during autocomplete.")
@@ -21,10 +24,8 @@ async def asset_autocomplete(interaction: Interaction, current: str) -> List[app
 
     base = ", ".join(p.strip() for p in parts[:-1] if p.strip())
 
-    logger.debug(f"Autocomplete matches for '{current}': {matches}")
-    # await interaction.response.autocomplete(
+    logger.debug("Autocomplete matches for '%s': %s", current, matches)
     return [
         app_commands.Choice(name=f"{base}, {match}" if base else match, value=f"{base}, {match}" if base else match)
         for match in matches
-    ]  # [:25]  # Limit to 25 choices as per Discord's limit
-    # )
+    ] [:25]  # Limit to 25 choices as per Discord's limit

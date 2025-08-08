@@ -11,7 +11,7 @@ import logging
 
 # Create a logger
 logger = logging.getLogger("fantasy_bot")
-logger.setLevel(logging.DEBUG)  # Change to INFO or WARNING for production
+logger.setLevel(logging.INFO)  # Change to INFO or WARNING for production
 
 # Create console handler and set level
 ch = logging.StreamHandler()

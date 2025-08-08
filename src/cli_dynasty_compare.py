@@ -1,4 +1,5 @@
-"""This module is used for comparing dynasty trades between two sides locally using launch.json in VS Code."""
+"""This module is used for comparing dynasty trades between two sides locally using launch.json in VS Code.
+"""
 
 import argparse
 import asyncio
