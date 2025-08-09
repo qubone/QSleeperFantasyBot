@@ -1,13 +1,20 @@
 name: CI
 
+description: Continuous Integration Workflow for QSleeperFantasyBot
+
+permissions:
+  contents: write
+
 on:
   pull_request:
     branches: [main]
   push:
     branches: [main]
+  workflow_dispatch:
 
 env:
   PYTHON_VERSION: "3.12"
+  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
 jobs:
   lint:

@@ -10,6 +10,16 @@ inputs:
 runs:
   using: "composite"
   steps:
+
+
+
+    - name: Configure Git user and auth
+        shell: bash
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git remote set-url origin https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}
+  
     - name: Bump Patch Version
       run: |
         uv run scripts/bump_patch.py \
