@@ -70,5 +70,6 @@ jobs:
           python-version: ${{ env.PYTHON_VERSION }}
       - uses: ./.github/actions/bump-patch-and-tag
         with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
           dry-run: ${{ github.event_name == 'pull_request' }}
 
