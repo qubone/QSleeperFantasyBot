@@ -8,21 +8,21 @@ inputs:
     description: Perform a dry run (no tag creation)
 
 runs:
-  using: "composite"
+  using: composite
   steps:
 
-
-
     - name: Configure Git user and auth
-        shell: bash
-        run: |
-          git config user.name "github-actions[bot]"
-          git config user.email "github-actions[bot]@users.noreply.github.com"
-          git remote set-url origin https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}
+      run: |
+        git config user.name "github-actions[bot]"
+        git config user.email "github-actions[bot]@users.noreply.github.com"
+        git remote set-url origin https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}
+      shell: bash
   
     - name: Bump Patch Version
       run: |
-        uv run scripts/bump_patch.py \
-          --version-file VERSION \
-          ${{ inputs.dry-run == 'true' && '--dry-run' || '' }}
+        if [ "${{ inputs.dry-run }}" = "true" ]; then
+          uv run scripts/bump_patch.py --dry-run
+        else
+          uv run scripts/bump_patch.py
+        fi
       shell: bash
