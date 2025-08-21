@@ -20,56 +20,75 @@ jobs:
   lint:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - uses: ./.github/actions/prepare-uv-environment
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Prepare UV Environment
+        uses: ./.github/actions/prepare-uv-environment
         with:
           python-version: ${{ env.PYTHON_VERSION }}
           dependency-groups: "lint"
-      - uses: ./.github/actions/run-lint
+      - name: Run Lint
+        uses: ./.github/actions/run-lint
 
   typecheck:
     needs: [lint]
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - uses: ./.github/actions/prepare-uv-environment
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Prepare UV Environment
+        uses: ./.github/actions/prepare-uv-environment
         with:
           python-version: ${{ env.PYTHON_VERSION }}
           dependency-groups: "typecheck"
-      - uses: ./.github/actions/run-typecheck
+      - name: Run Type Check
+        uses: ./.github/actions/run-typecheck
 
   test:
     needs: typecheck
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - uses: ./.github/actions/prepare-uv-environment
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Prepare UV Environment
+        uses: ./.github/actions/prepare-uv-environment
         with:
           python-version: ${{ env.PYTHON_VERSION }}
           dependency-groups: "test"
-      - uses: ./.github/actions/run-tests
+      - name: Run Tests
+        uses: ./.github/actions/run-tests
 
   build:
     needs: test
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - uses: ./.github/actions/prepare-uv-environment
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Prepare UV Environment
+        uses: ./.github/actions/prepare-uv-environment
         with:
           python-version: ${{ env.PYTHON_VERSION }}
-      - uses: ./.github/actions/run-build
+      - name: Run Build
+        uses: ./.github/actions/run-build
 
-  bump-patch:
+  release:
     if: github.event_name == 'push' && github.ref == 'refs/heads/main'
     needs: build
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - uses: ./.github/actions/prepare-uv-environment
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Prepare UV Environment
+        uses: ./.github/actions/prepare-uv-environment
         with:
           python-version: ${{ env.PYTHON_VERSION }}
-      - uses: ./.github/actions/bump-patch-and-tag
+      - name: Bump Patch and Tag
+        uses: ./.github/actions/bump-patch-and-tag
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           dry-run: ${{ github.event_name == 'pull_request' }}
 
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ github.ref_name }}
