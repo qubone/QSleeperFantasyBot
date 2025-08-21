@@ -34,21 +34,34 @@ from qsleeperfantasybot import __version__
 
 load_dotenv()
 TOKEN = os.getenv("DISCORD_TOKEN")
+GUILD_ID = int(os.getenv("TEST_GUILD_ID", "0"))
 
 intents = discord.Intents.default()
 intents.message_content = True  # Required for reading messages
-bot = commands.Bot(command_prefix="!", intents=intents)
 
-@bot.event
-async def on_ready() -> None:
-    logger.info("Starting QSleeperFantasyBot version %s", __version__)
-    setup_commands(bot)
-    await fetch_asset_names()
-    await bot.tree.sync()
-    logger.info("Logged in as %s", bot.user)
+class FantasyBot(commands.Bot):
+    """Custom bot class for QSleeper Fantasy Bot."""
+    async def setup_hook(self) -> None:
+        setup_commands(self)
+        await fetch_asset_names()
+
+        # Sync commands (guild = instant, global = slow)
+        if GUILD_ID:
+            guild = discord.Object(id=GUILD_ID)
+            self.tree.copy_global_to(guild=guild)
+            await self.tree.sync(guild=guild)
+            logger.info("Synced commands to guild %s", GUILD_ID)
+        else:
+            await self.tree.sync()
+            logger.info("Synced commands globally (may take up to 1h)")
+
+    async def on_ready(self) -> None:
+        logger.info("Starting QSleeperFantasyBot version %s", __version__)
+        logger.info("Logged in as %s", self.user)
 
 if __name__ == "__main__":
     if not TOKEN:
         logger.error("DISCORD_TOKEN environment variable not set.")
         exit(1)
+    bot = FantasyBot(command_prefix="!", intents=intents)
     bot.run(TOKEN)
