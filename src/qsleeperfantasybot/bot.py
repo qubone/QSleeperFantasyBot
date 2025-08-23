@@ -39,8 +39,10 @@ GUILD_ID = int(os.getenv("TEST_GUILD_ID", "0"))
 intents = discord.Intents.default()
 intents.message_content = True  # Required for reading messages
 
+
 class FantasyBot(commands.Bot):
     """Custom bot class for QSleeper Fantasy Bot."""
+
     async def setup_hook(self) -> None:
         setup_commands(self)
         await fetch_asset_names()
@@ -58,6 +60,7 @@ class FantasyBot(commands.Bot):
     async def on_ready(self) -> None:
         logger.info("Starting QSleeperFantasyBot version %s", __version__)
         logger.info("Logged in as %s", self.user)
+
 
 if __name__ == "__main__":
     if not TOKEN:
