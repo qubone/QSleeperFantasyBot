@@ -44,20 +44,16 @@ def setup(bot: Bot) -> None:
     @bot.tree.command(name="setusername", description="Set your Sleeper username")
     @app_commands.describe(sleeper_username="Your Sleeper account user name")
     async def setusername(interaction: Interaction, sleeper_username: str) -> None:
-        """Set your Sleeper username using slash command.
-        """
+        """Set your Sleeper username using slash command."""
         set_sleeper_username(interaction.user.id, sleeper_username)
         await interaction.response.send_message(
             f"✅ Sleeper username `{sleeper_username}` linked to QSleeprFantasyBot",
             ephemeral=True,
         )
 
-    @bot.tree.command(
-        name="getusername", description="Get your linked Sleeper username"
-    )
+    @bot.tree.command(name="getusername", description="Get your linked Sleeper username")
     async def getusername(interaction: Interaction) -> None:
-        """Get your Sleeper username using slash command.
-        """
+        """Get your Sleeper username using slash command."""
         sleeper_username = get_sleeper_username(interaction.user.id)
         if sleeper_username:
             await interaction.response.send_message(
