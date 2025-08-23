@@ -47,7 +47,7 @@ def setup(bot: Bot) -> None:
         """Set your Sleeper username using slash command."""
         set_sleeper_username(interaction.user.id, sleeper_username)
         await interaction.response.send_message(
-            f"✅ Sleeper username `{sleeper_username}` linked to QSleeprFantasyBot",
+            f"✅ Sleeper username `{sleeper_username}` linked to QSleeperFantasyBot",
             ephemeral=True,
         )
 

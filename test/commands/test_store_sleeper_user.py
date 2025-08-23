@@ -39,7 +39,7 @@ async def test_setusername_command(bot: commands.Bot, interaction: AsyncMock) ->
         await callback(interaction, "testuser")
         mock_set.assert_called_once_with(42, "testuser")
         interaction.response.send_message.assert_called_once_with(
-            "✅ Sleeper username `testuser` linked to QSleeprFantasyBot",
+            "✅ Sleeper username `testuser` linked to QSleeperFantasyBot",
             ephemeral=True,
         )
 
