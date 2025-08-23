@@ -2,6 +2,7 @@
 This module provides the version of the bot, which can be used for logging or display purposes.
 The version is determined from the package metadata or environment variables.
 """
+
 try:
     import os
     from importlib.metadata import version as _version

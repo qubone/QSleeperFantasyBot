@@ -28,4 +28,4 @@ async def asset_autocomplete(interaction: Interaction, current: str) -> List[app
     return [
         app_commands.Choice(name=f"{base}, {match}" if base else match, value=f"{base}, {match}" if base else match)
         for match in matches
-    ] [:25]  # Limit to 25 choices as per Discord's limit
+    ][:25]  # Limit to 25 choices as per Discord's limit
