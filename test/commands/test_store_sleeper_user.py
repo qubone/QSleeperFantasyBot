@@ -32,7 +32,7 @@ set_username_type = Callable[[Interaction, str], Awaitable[None]]
 @pytest.mark.asyncio
 async def test_setusername_command(bot: commands.Bot, interaction: AsyncMock) -> None:
     """Test the /setusername command."""
-    with patch.object(store_sleeper_user, "set_sleeper_username") as mock_set:
+    with patch.object(store_sleeper_user.sleeper_user_handler, "set_username") as mock_set:
         cmd = bot.tree.get_command("setusername")
         assert isinstance(cmd, app_commands.Command)
         callback = cast(set_username_type, cmd.callback)
@@ -48,9 +48,12 @@ get_username_type = Callable[[Interaction], Awaitable[None]]
 
 
 @pytest.mark.asyncio
-async def test_getusername_command_found(bot: commands.Bot, interaction: AsyncMock) -> None:
+async def test_getusername_command_found(
+    bot: commands.Bot,
+    interaction: AsyncMock,
+) -> None:
     """Test the /getusername command when username is found."""
-    with patch.object(store_sleeper_user, "get_sleeper_username", return_value="testuser"):
+    with patch.object(store_sleeper_user.sleeper_user_handler, "get_username", return_value="testuser"):
         cmd = bot.tree.get_command("getusername")
         assert isinstance(cmd, app_commands.Command)
         callback = cast(get_username_type, cmd.callback)
@@ -62,9 +65,12 @@ async def test_getusername_command_found(bot: commands.Bot, interaction: AsyncMo
 
 
 @pytest.mark.asyncio
-async def test_getusername_command_not_found(bot: commands.Bot, interaction: AsyncMock) -> None:
+async def test_getusername_command_not_found(
+    bot: commands.Bot,
+    interaction: AsyncMock,
+) -> None:
     """Test the /getusername command when username is not found."""
-    with patch.object(store_sleeper_user, "get_sleeper_username", return_value=None):
+    with patch.object(store_sleeper_user.sleeper_user_handler, "get_username", return_value=None):
         cmd = bot.tree.get_command("getusername")
         assert isinstance(cmd, app_commands.Command)
         callback = cast(get_username_type, cmd.callback)
