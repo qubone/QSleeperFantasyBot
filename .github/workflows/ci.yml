@@ -83,12 +83,21 @@ jobs:
         with:
           python-version: ${{ env.PYTHON_VERSION }}
       - name: Bump Patch and Tag
+        id: bump
         uses: ./.github/actions/bump-patch-and-tag
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           dry-run: ${{ github.event_name == 'pull_request' }}
 
+      - name: Create Release Notes
+        id: notes
+        uses: ./.github/actions/create-release-notes
+        with:
+          new-tag: ${{ steps.bump.outputs.new-tag }}
+
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v2
         with:
-          tag_name: ${{ github.ref_name }}
+          tag_name: ${{ steps.bump.outputs.new-tag }}
+          name: Release ${{ steps.bump.outputs.new-tag }}
+          body: ${{ steps.notes.outputs.body }}
