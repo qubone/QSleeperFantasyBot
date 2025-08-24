@@ -11,6 +11,11 @@ inputs:
     required: true
     description: GitHub token for authentication
 
+outputs:
+  new-tag:
+    description: "The new tag created (or calculated in dry run)"
+    value: ${{ steps.bump.outputs.tag }}
+
 runs:
   using: composite
   steps:
@@ -23,10 +28,8 @@ runs:
       shell: bash
   
     - name: Bump Patch Version
+      id: bump
       run: |
-        if [ "${{ inputs.dry-run }}" = "true" ]; then
-          uv run scripts/bump_patch.py --dry-run
-        else
-          uv run scripts/bump_patch.py
-        fi
+        TAG=$(uv run scripts/bump_patch.py $( [ "${{ inputs.dry-run }}" = "true" ] && echo "--dry-run" ))
+        echo "tag=$TAG" >> $GITHUB_OUTPUT
       shell: bash

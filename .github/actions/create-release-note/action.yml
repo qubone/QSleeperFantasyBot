@@ -1,54 +1,78 @@
-#TODO: Implement release notes generation
-
-name: Bump Patch and Tag
-description: Bump the patch version based on VERSION file, create a git tag, and publish a GitHub release
+name: Create Release Notes
+description: Generate grouped release notes from commits since the previous tag, excluding merge commits, with commit & PR links.
 
 inputs:
-  dry-run:
-    required: false
-    default: "false"
-    description: Perform a dry run (no tag creation)
+  new-tag:
+    description: "The new version tag (e.g. v1.2.3)"
+    required: true
+
+outputs:
+  body:
+    description: "Generated release notes body"
+    value: ${{ steps.generate.outputs.body }}
 
 runs:
-  using: "composite"
+  using: composite
   steps:
-    - name: Checkout repository
-      uses: actions/checkout@v4
-      with:
-        fetch-depth: 0  # needed so git tags are available
-
-    - name: Set up Python
-      uses: actions/setup-python@v5
-      with:
-        python-version: "3.12"
-
-    - name: Install GitHub CLI
-      run: |
-        sudo apt-get update
-        sudo apt-get install -y gh
+    - name: Generate release notes body
+      id: generate
       shell: bash
-
-    - name: Bump patch version
-      id: bump
       run: |
-        TAG=$(python scripts/bump_patch.py \
-          --version-file VERSION \
-          $([ "${{ inputs.dry-run }}" == "true" ] && echo "--dry-run" || true))
-        echo "tag=$TAG" >> $GITHUB_OUTPUT
-      shell: bash
+        OWNER_REPO="${GITHUB_REPOSITORY}"
+        PREV_TAG=$(git describe --tags --abbrev=0 HEAD^ 2>/dev/null || echo "")
+        NEW_TAG="${{ inputs.new-tag }}"
 
-    - name: Create Git tag and push
-      if: inputs.dry-run == 'false'
-      run: |
-        python scripts/bump_patch.py --version-file VERSION
-      shell: bash
+        if [ -n "$PREV_TAG" ]; then
+          COMMITS=$(git log --no-merges --pretty=format:"%s|%h" $PREV_TAG..HEAD)
+        else
+          COMMITS=$(git log --no-merges --pretty=format:"%s|%h")
+        fi
 
-    - name: Create GitHub Release
-      if: inputs.dry-run == 'false'
-      env:
-        GITHUB_TOKEN: ${{ github.token }}
-      run: |
-        gh release create "${{ steps.bump.outputs.tag }}" \
-          --title "Release ${{ steps.bump.outputs.tag }}" \
-          --generate-notes
-      shell: bash
+        FEATURES=""
+        FIXES=""
+        DOCS=""
+        OTHERS=""
+
+        while IFS="|" read -r subject hash; do
+          COMMIT_LINK="[\`$hash\`](https://github.com/$OWNER_REPO/commit/$hash)"
+          # Extract PR number if present (#123)
+          if [[ "$subject" =~ \(#([0-9]+)\) ]]; then
+            PR_NUM="${BASH_REMATCH[1]}"
+            PR_LINK="[#${PR_NUM}](https://github.com/$OWNER_REPO/pull/$PR_NUM)"
+            LINE="${subject//(#$PR_NUM)/$PR_LINK} ($COMMIT_LINK)"
+          else
+            LINE="$subject ($COMMIT_LINK)"
+          fi
+
+          if [[ "$subject" == feat:* ]]; then
+            FEATURES+="$LINE"$'\n'
+          elif [[ "$subject" == fix:* ]]; then
+            FIXES+="$LINE"$'\n'
+          elif [[ "$subject" == docs:* ]]; then
+            DOCS+="$LINE"$'\n'
+          else
+            OTHERS+="$LINE"$'\n'
+          fi
+        done <<< "$COMMITS"
+
+        BODY="## What's Changed"$'\n\n'
+        if [ -n "$FEATURES" ]; then
+          BODY+="### ✨ Features"$'\n'"$FEATURES"$'\n'
+        fi
+        if [ -n "$FIXES" ]; then
+          BODY+="### 🐛 Fixes"$'\n'"$FIXES"$'\n'
+        fi
+        if [ -n "$DOCS" ]; then
+          BODY+="### 📝 Docs"$'\n'"$DOCS"$'\n'
+        fi
+        if [ -n "$OTHERS" ]; then
+          BODY+="### 🔧 Other Changes"$'\n'"$OTHERS"$'\n'
+        fi
+
+        if [ -n "$PREV_TAG" ]; then
+          BODY+=$'\n'"**Full Changelog:** https://github.com/$OWNER_REPO/compare/$PREV_TAG...$NEW_TAG"$'\n'
+        fi
+
+        echo "body<<EOF" >> $GITHUB_OUTPUT
+        echo "$BODY" >> $GITHUB_OUTPUT
+        echo "EOF" >> $GITHUB_OUTPUT
