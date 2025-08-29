@@ -85,7 +85,7 @@ def main(version_file: Path, dry_run: bool) -> None:
         logging.info("Dry run enabled, not creating tag.")
         return
     create_and_push_tag(new_tag)
-    print(new_tag) # noqa: T201
+    print(new_tag)  # noqa: T201
 
 
 if __name__ == "__main__":
