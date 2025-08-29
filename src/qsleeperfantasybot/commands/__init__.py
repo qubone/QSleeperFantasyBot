@@ -4,7 +4,7 @@ like dynasty trade comparisons and help requests."""
 
 from discord.ext.commands import Bot
 
-__all__ = ["dynasty_trade", "help", "store_sleeper_user"]
+__all__ = ["dynasty_trade", "help", "store_sleeper_user", "get_leagues"]
 
 
 def setup_commands(bot: Bot) -> None:
@@ -14,8 +14,9 @@ def setup_commands(bot: Bot) -> None:
     Args:
         bot (commands.Bot): The Discord bot instance.
     """
-    from . import dynasty_trade, help, store_sleeper_user
+    from . import dynasty_trade, help, store_sleeper_user, get_leagues
 
     dynasty_trade.setup(bot)
     help.setup(bot)
     store_sleeper_user.setup(bot)
+    get_leagues.setup(bot)
