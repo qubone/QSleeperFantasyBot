@@ -89,7 +89,7 @@ async def get_player_value(
     is_dynasty: bool = False,
     num_qbs: int = 1,
     num_teams: int = 12,
-    ppr: int = 1,
+    ppr: float = 1,
 ) -> Player | None:
     """Fetches and returns a player object with value information from the FantasyCalc API based on the provided player
        name and league settings.
@@ -98,7 +98,8 @@ async def get_player_value(
         is_dynasty (bool, optional): Whether the league is a dynasty league. Defaults to False.
         num_qbs (int, optional): Number of starting quarterbacks in the league. Defaults to 1.
         num_teams (int, optional): Number of teams in the league. Defaults to 12.
-        ppr (int, optional): Points per reception setting (0 for standard, 1 for full PPR, etc.). Defaults to 1.
+        ppr (float, optional):
+          Points per reception setting (0 for standard, 0.5 for half PPR, 1 for full PPR, etc.). Defaults to 1.
     Returns:
         Player or None: The player object if found (exact or substring match), otherwise None.
     Raises:

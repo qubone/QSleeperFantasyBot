@@ -8,6 +8,7 @@ from enum import Enum
 @dataclass
 class ScoringSettings:
     """Handling of scoring settings from Sleeper API."""
+
     rec_yd: float
     fum: float
     rush_yd: float
@@ -35,6 +36,7 @@ class LeagueType(Enum):
 @dataclass
 class Settings:
     """Handling of league settings from Sleeper API."""
+
     type: LeagueType
     num_teams: int
     best_ball: int

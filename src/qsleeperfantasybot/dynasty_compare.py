@@ -3,8 +3,9 @@ It calculates the total value of assets on each side using player values from th
 and returns a formatted message summarizing the trade comparison, including the total values for each side,
 a breakdown of individual asset values, and which side holds the advantage.
 Functions:
-    dynasty_compare(side_a: List[str], side_b: List) -> str
+    dynasty_compare(side_a: List[str], side_b: List, ppr: float, is_super_flex: bool, number_of_teams: int) -> str
         Asynchronously compares two lists of dynasty assets and returns a formatted trade comparison message.
+        Options include PPR settings, super flex status, and number of teams in the league.
 """
 
 from typing import List, Tuple
@@ -13,11 +14,21 @@ from qsleeperfantasybot.fantasycalc import get_player_value
 from qsleeperfantasybot.messages import construct_dynasty_trade_message
 
 
-async def dynasty_compare(side_a: List[str], side_b: List[str]) -> str:
+async def dynasty_compare(
+    side_a: List[str],
+    side_b: List[str],
+    ppr: float,
+    is_super_flex: bool,
+    number_of_teams: int,
+) -> str:
     """Compare two sides of a dynasty trade and return a formatted message.
     Args:
         side_a (List[str]): List of assets for side A.
         side_b (List[str]): List of assets for side B.
+        ppr (float): PPR setting (e.g., 0, 0.5, 1). Default is 1.
+        is_super_flex (bool): Whether the league is super flex. Default is True.
+        number_of_teams (int): Number of teams in the league. Default is 12.
+
     Returns:
         str: Formatted message with total values and advantage.
     """
@@ -32,7 +43,13 @@ async def dynasty_compare(side_a: List[str], side_b: List[str]) -> str:
         total = 0
         asset_details: List[Tuple[str, int]] = []
         for name in assets:
-            player = await get_player_value(name, is_dynasty=True)
+            player = await get_player_value(
+                name,
+                is_dynasty=True,
+                ppr=ppr,
+                num_qbs=(2 if is_super_flex else 1),
+                num_teams=number_of_teams,
+            )
             if player:
                 value = player.value
                 total += value
