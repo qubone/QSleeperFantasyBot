@@ -41,7 +41,7 @@ def setup(bot: Bot) -> None:
         number_of_teams: int = 12,
     ) -> None:
         """Compare dynasty trade value between two sides using slash command."""
-        await interaction.response.defer()
+        await interaction.response.defer(ephemeral=True)
         side_a_list = [s.strip() for s in side_a.split(",")]
         side_b_list = [s.strip() for s in side_b.split(",")]
         result = await dynasty_compare(
