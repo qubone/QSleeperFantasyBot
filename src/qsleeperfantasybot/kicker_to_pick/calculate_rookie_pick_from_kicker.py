@@ -136,17 +136,9 @@ def write_log_file(final_name: str, final_text: str) -> None:
         with kicker_log_file.open("a", encoding="utf-8") as f:
             f.write(final_text + "\n")
         logger.info(f"Output appended to {kicker_log_file}")
-        # click.secho(f"\n Output appended to {kicker_log_file}", fg="cyan")
     except IOError as e:
         logger.error(f"Error writing to log file: {e}")
-        # click.secho(f"Error writing to log file: {e}", fg="red")
 
-
-# @click.command()
-# @click.argument("league_id", metavar="<League ID>")
-# @click.argument("draft_id", required=False, metavar="[Draft ID]")
-# @click.option("--name", "-n", default="Sleeper League", help="Custom name for the league.")
-# @click.option("--teams", "-t", default=12, type=int, help="Number of teams (picks per round).")
 def run_kicker_scan(league_id: str, draft_id: Optional[str], name: str, teams: int) -> str | None:
     """Sleeper Kicker-to-Rookie Pick Converter.
 
@@ -157,7 +149,6 @@ def run_kicker_scan(league_id: str, draft_id: Optional[str], name: str, teams: i
     league_data = get_league_info(league_id)
     if not league_data:
         logger.error("Error: Could not find league with that ID.")
-        # click.secho("Error: Could not find league with that ID.", fg="red")
         return None
 
     final_name = league_data.get("name", name)
@@ -171,19 +162,17 @@ def run_kicker_scan(league_id: str, draft_id: Optional[str], name: str, teams: i
 
     if not users_data or not draft_picks:
         logger.error("Error: Failed to retrieve league users or draft picks.")
-        # click.secho("Error: Failed to retrieve league users or draft picks.", fg="red")
         return None
 
     user_map = {u["user_id"]: u["display_name"] for u in users_data} if isinstance(users_data, list) else {}
     k_picks = (
-        [p for p in draft_picks if players.get(p["player_id"], {}).get("position") == "K"]
+        [p for p in draft_picks if players.get(p["player_id"], {}).get("position") in ("K", "P")]
         if isinstance(draft_picks, list)
         else []
     )
 
     final_text = generate_output(players, k_picks, user_map, teams, final_name)
 
-    # click.echo(final_text)
     logger.info(final_text)
-    return final_text
     write_log_file(final_name, final_text)
+    return final_text
