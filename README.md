@@ -5,6 +5,8 @@ A Discord bot for Sleeper fantasy football leagues with dynasty-focused tools an
 # Features
 Dynasty multi asset trading, Player A, 2028 Round 1 vs Player B, 2026 Round 2
 
+Kicker to rookie draft pick tracker for startup drafts prior to the NFL rookie draft.
+
 # Setup
 Invite the bot to your server (link will be provided soon)
 
@@ -14,6 +16,7 @@ Invite the bot to your server (link will be provided soon)
 /help
 /setuser sleeper_username
 /getuser
+/kickertopick league_id
 
 # Autocompletion
 When using dynasty trade command you will retrieve the list of all available assets.
