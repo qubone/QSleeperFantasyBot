@@ -19,3 +19,4 @@ deploy_bot.sh
 
 # Local Sleeper user data
 sleeper_data/user_data_local.json
+sleeper_data/nfl_players.json
