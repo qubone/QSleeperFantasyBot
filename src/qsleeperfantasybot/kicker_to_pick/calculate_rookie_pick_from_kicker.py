@@ -26,7 +26,6 @@ def fetch_data(url: str) -> Optional[Dict[str, Any] | List[Any]]:
         return response.json() if response.status_code == HTTP_OK else None
     except Exception as e:
         logger.exception("Network error fetching %s: %s", url, e)
-        # click.secho(f"Network Error: {e}", fg="red")
         return None
 
 
@@ -48,7 +47,6 @@ def get_players() -> Dict[str, Any]:
                 logger.warning(f"Cache file corrupted or unreadable: {e}. Re-fetching...")
 
     logger.info("Fetching fresh player data from Sleeper (this may take a moment)...")
-    # click.echo("Fetching fresh player data from Sleeper (this may take a moment)...")
     data = fetch_data("https://api.sleeper.app/v1/players/nfl")
     if data and isinstance(data, dict):
         with cache_path.open("w", encoding="utf-8") as f:
@@ -77,14 +75,11 @@ def resolve_draft_id(league_id: str, draft_id: Optional[str]) -> Optional[str]:
     if draft_id:
         return draft_id
 
-    # click.echo(f"Searching for latest draft in league {league_id}...")
     logger.info(f"Searching for latest draft in league {league_id}...")
     draft_id = get_auto_draft_id(league_id)
     if not draft_id:
-        # click.secho("Error: No drafts found for this league.", fg="red")
         logger.error("Error: No drafts found for this league.")
         return None
-    # click.echo(f"Target Draft: {draft_id}")
     logger.info(f"Target Draft: {draft_id}")
     return draft_id
 

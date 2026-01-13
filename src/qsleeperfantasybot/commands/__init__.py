@@ -14,9 +14,10 @@ def setup_commands(bot: Bot) -> None:
     Args:
         bot (commands.Bot): The Discord bot instance.
     """
-    from . import dynasty_trade, help, store_sleeper_user, get_leagues
+    from . import dynasty_trade, help, store_sleeper_user, get_leagues, kicker_to_pick
 
     dynasty_trade.setup(bot)
     help.setup(bot)
     store_sleeper_user.setup(bot)
     get_leagues.setup(bot)
+    kicker_to_pick.setup(bot)
