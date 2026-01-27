@@ -81,3 +81,11 @@ local_scheme = "node-and-date"
 
 [tool.setuptools.package-data]
 "qsleeperfantasybot" = ["py.typed"]
+
+[tool.uv.sources]
+q-python-ci-generator = { git = "https://github.com/qubone/q-python-ci-generator.git", rev = "main" }
+
+[dependency-groups]
+ci = [
+    "q-python-ci-generator",
+]
