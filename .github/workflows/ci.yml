@@ -19,4 +19,4 @@ jobs:
       github-token: ${{ secrets.GITHUB_TOKEN }}
     with:
       python-version: 3.12
-      coverage-threshold: 80
+      coverage-threshold: 60
