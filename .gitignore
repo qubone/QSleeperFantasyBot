@@ -22,6 +22,7 @@ coverage_html_report
 # Local Sleeper user data
 sleeper_data/user_data_local.json
 sleeper_data/nfl_players.json
+scripts/bump_patch.py
 
 # Logging
 logs/
