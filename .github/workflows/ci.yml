@@ -1,6 +1,6 @@
 name: CI
 
-description: Continuous Integration Workflow for QSleeperFantasyBot
+description: Continuous Integration Workflow for qsleeperfantasybot module
 
 permissions:
   contents: write
@@ -12,92 +12,11 @@ on:
     branches: [main]
   workflow_dispatch:
 
-env:
-  PYTHON_VERSION: "3.12"
-  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
 jobs:
-  lint:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-      - name: Prepare UV Environment
-        uses: ./.github/actions/prepare-uv-environment
-        with:
-          python-version: ${{ env.PYTHON_VERSION }}
-          dependency-groups: "lint"
-      - name: Run Lint
-        uses: ./.github/actions/run-lint
-
-  typecheck:
-    needs: [lint]
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-      - name: Prepare UV Environment
-        uses: ./.github/actions/prepare-uv-environment
-        with:
-          python-version: ${{ env.PYTHON_VERSION }}
-          dependency-groups: "typecheck"
-      - name: Run Type Check
-        uses: ./.github/actions/run-typecheck
-
-  test:
-    needs: typecheck
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-      - name: Prepare UV Environment
-        uses: ./.github/actions/prepare-uv-environment
-        with:
-          python-version: ${{ env.PYTHON_VERSION }}
-          dependency-groups: "test"
-      - name: Run Tests
-        uses: ./.github/actions/run-tests
-
-  build:
-    needs: test
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-      - name: Prepare UV Environment
-        uses: ./.github/actions/prepare-uv-environment
-        with:
-          python-version: ${{ env.PYTHON_VERSION }}
-      - name: Run Build
-        uses: ./.github/actions/run-build
-
-  release:
-    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
-    needs: build
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-      - name: Prepare UV Environment
-        uses: ./.github/actions/prepare-uv-environment
-        with:
-          python-version: ${{ env.PYTHON_VERSION }}
-      - name: Bump Patch and Tag
-        id: bump
-        uses: ./.github/actions/bump-patch-and-tag
-        with:
-          github-token: ${{ secrets.GITHUB_TOKEN }}
-          dry-run: ${{ github.event_name == 'pull_request' }}
-
-      - name: Create Release Notes
-        id: notes
-        uses: ./.github/actions/create-release-notes
-        with:
-          new-tag: ${{ steps.bump.outputs.new-tag }}
-
-      - name: Create GitHub Release
-        uses: softprops/action-gh-release@v2
-        with:
-          tag_name: ${{ steps.bump.outputs.new-tag }}
-          name: Release ${{ steps.bump.outputs.new-tag }}
-          body: ${{ steps.notes.outputs.body }}
+  ci:
+    uses: qubone/q-python-ci-actions/.github/workflows/python-ci.yml@main
+    secrets:
+      github-token: ${{ secrets.GITHUB_TOKEN }}
+    with:
+      python-version: 3.12
+      coverage-threshold: 80

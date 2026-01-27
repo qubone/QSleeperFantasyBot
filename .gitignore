@@ -12,11 +12,21 @@ wheels/
 # Virtual environments
 .venv
 
+# VS Code
+.vscode/
+
 # Test coverage
 coverage_html_report
 .coverage
-deploy_bot.sh
 
 # Local Sleeper user data
 sleeper_data/user_data_local.json
 sleeper_data/nfl_players.json
+
+# Logging
+logs/
+
+# Cache
+.mypy_cache/
+.pytest_cache/
+.ruff_cache/
