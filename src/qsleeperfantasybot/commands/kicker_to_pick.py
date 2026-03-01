@@ -25,19 +25,21 @@ def setup(bot: Bot) -> None:
         league_id="Sleeper league ID",
         draft_id="Draft ID (optional)",
         teams="Number of teams (picks per round)",
-         name="Custom league name"
+        rounds="Number of rounds in the draft",
+        name="Custom league name"
     )
     async def kickertopick(
         interaction: Interaction,
         league_id: str,
         draft_id: Optional[str] = None,
         teams: int = 12,
+        rounds: int = 4,
         name: Optional[str] = None
         ) -> None:
         """Slash command handler for kicker->rookie pick conversion."""
         await interaction.response.defer(ephemeral=True)
 
-        result = run_kicker_scan(league_id, draft_id, name or "Sleeper League", teams)
+        result = run_kicker_scan(league_id, draft_id, name or "Sleeper League", teams, rounds)
         # Send result as followup (we deferred earlier)
         if result:
             await interaction.followup.send(result, ephemeral=True)
