@@ -12,7 +12,6 @@ import requests
 
 PLAYER_CACHE_FILE = "nfl_players.json"
 CACHE_EXPIRY = 86400  # 24 hours
-TOTAL_NUM_PICKS = 48
 LOW_REMAINING_THRESHOLD = 5
 HTTP_OK = 200
 
@@ -94,14 +93,21 @@ def fetch_draft_data(
 
 
 def generate_output(
-    players: Dict[str, Any], draft_picks: List[Any], user_map: Dict[str, str], teams: int, final_name: str
+    players: Dict[str, Any],
+    draft_picks: List[Any],
+    user_map: Dict[str, str],
+    teams: int,
+    rounds: int,
+    final_name: str
 ) -> str:
     """Generate the output text for kicker picks."""
     now = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
     output = [f"**2026 Rookie Pick Tracker: {final_name}**", f"*Last Updated: {now}*", "---"]
 
+    total_number_picks = teams * rounds
+
     for i, pick in enumerate(draft_picks):
-        if i >= TOTAL_NUM_PICKS:
+        if i >= total_number_picks:
             break
 
         round_num = (i // teams) + 1
@@ -118,7 +124,7 @@ def generate_output(
             output.append("---")
     output.append("\n")
 
-    remaining = TOTAL_NUM_PICKS - len(draft_picks)
+    remaining = total_number_picks - len(draft_picks)
     if 0 < remaining <= LOW_REMAINING_THRESHOLD:
         output.append(f"**Only {remaining} rookie picks remaining.**")
     elif remaining <= 0:
@@ -139,7 +145,7 @@ def write_log_file(final_name: str, final_text: str) -> None:
     except IOError as e:
         logger.error(f"Error writing to log file: {e}")
 
-def run_kicker_scan(league_id: str, draft_id: Optional[str], name: str, teams: int) -> str | None:
+def run_kicker_scan(league_id: str, draft_id: Optional[str], name: str, teams: int, rounds: int) -> str | None:
     """Sleeper Kicker-to-Rookie Pick Converter.
 
     <League ID>: The numeric ID found in your Sleeper league URL.
@@ -171,7 +177,13 @@ def run_kicker_scan(league_id: str, draft_id: Optional[str], name: str, teams: i
         else []
     )
 
-    final_text = generate_output(players, k_picks, user_map, teams, final_name)
+    final_text = generate_output(
+        players=players,
+        draft_picks=k_picks,
+        user_map=user_map,
+        teams=teams,
+        rounds=rounds,
+        final_name=final_name)
 
     logger.info(final_text)
     write_log_file(final_name, final_text)

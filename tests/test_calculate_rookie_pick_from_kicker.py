@@ -289,7 +289,13 @@ class TestGenerateOutput:
         """Test basic output generation."""
         user_map = {"user1": "TeamOwner1", "user2": "TeamOwner2", "user3": "TeamOwner3"}
 
-        output = generate_output(mock_player_data, mock_draft_picks, user_map, teams=3, final_name="Test League")
+        output = generate_output(
+            mock_player_data,
+             mock_draft_picks,
+            user_map, teams=3,
+            rounds=4,
+            final_name="Test League"
+        )
 
         assert "Test League" in output
         assert "TeamOwner1" in output
@@ -301,7 +307,7 @@ class TestGenerateOutput:
         """Test output generation with no picks."""
         user_map: Dict[str, str] = {}
 
-        output = generate_output(mock_player_data, [], user_map, teams=12, final_name="Empty League")
+        output = generate_output(mock_player_data, [], user_map, teams=12, rounds=4, final_name="Empty League")
 
         assert "Empty League" in output
         # No picks yet, so remaining message is not shown for > threshold picks
@@ -311,7 +317,7 @@ class TestGenerateOutput:
         draft_picks = [{"picked_by": f"user{i}", "metadata": {}} for i in range(44)]
         user_map = {f"user{i}": f"Team{i}" for i in range(44)}
 
-        output = generate_output(mock_player_data, draft_picks, user_map, teams=12, final_name="Test League")
+        output = generate_output(mock_player_data, draft_picks, user_map, teams=12, rounds=4, final_name="Test League")
 
         assert "Only 4 rookie picks remaining" in output
 
@@ -320,7 +326,7 @@ class TestGenerateOutput:
         draft_picks = [{"picked_by": f"user{i}", "metadata": {}} for i in range(48)]
         user_map = {f"user{i}": f"Team{i}" for i in range(48)}
 
-        output = generate_output(mock_player_data, draft_picks, user_map, teams=12, final_name="Test League")
+        output = generate_output(mock_player_data, draft_picks, user_map, teams=12, rounds=4, final_name="Test League")
 
         assert "Rookie draft picking complete" in output
 
@@ -329,7 +335,7 @@ class TestGenerateOutput:
         draft_picks = [{"picked_by": f"user{i}", "metadata": {}} for i in range(60)]
         user_map = {f"user{i}": f"Team{i}" for i in range(60)}
 
-        output = generate_output(mock_player_data, draft_picks, user_map, teams=12, final_name="Test League")
+        output = generate_output(mock_player_data, draft_picks, user_map, teams=12, rounds=4, final_name="Test League")
 
         lines = output.split("\n")
         pick_lines = [line for line in lines if line.startswith("Pick ")]
@@ -340,7 +346,7 @@ class TestGenerateOutput:
         draft_picks = [{"picked_by": f"user{i}", "metadata": {}} for i in range(6)]
         user_map = {f"user{i}": f"Team{i}" for i in range(6)}
 
-        output = generate_output(mock_player_data, draft_picks, user_map, teams=3, final_name="Test")
+        output = generate_output(mock_player_data, draft_picks, user_map, teams=3, rounds=2, final_name="Test")
 
         assert "Pick 1.01" in output
         assert "Pick 1.02" in output
@@ -354,7 +360,7 @@ class TestGenerateOutput:
         draft_picks = [{"picked_by": "unknown_user", "metadata": {}}]
         user_map: Dict[str, str] = {}
 
-        output = generate_output(mock_player_data, draft_picks, user_map, teams=12, final_name="Test")
+        output = generate_output(mock_player_data, draft_picks, user_map, teams=12, rounds=4, final_name="Test")
 
         assert "Unknown" in output
 
@@ -363,14 +369,14 @@ class TestGenerateOutput:
         draft_picks = [{"picked_by": "user1"}]
         user_map = {"user1": "Team1"}
 
-        output = generate_output(mock_player_data, draft_picks, user_map, teams=12, final_name="Test")
+        output = generate_output(mock_player_data, draft_picks, user_map, teams=12, rounds=4, final_name="Test")
 
         assert "Pick 1.01" in output
         assert "Team1" in output
 
     def test_generate_output_has_timestamp(self, mock_player_data: Dict[str, Any]) -> None:
         """Test that output includes timestamp."""
-        output = generate_output(mock_player_data, [], {}, teams=12, final_name="Test")
+        output = generate_output(mock_player_data, [], {}, teams=12, rounds=4, final_name="Test")
 
         assert "Last Updated:" in output
         # Check for datetime format
@@ -438,7 +444,7 @@ class TestRunKickerScan:
         mock_get_players.return_value = mock_player_data
         mock_fetch_draft.return_value = (mock_users_data, mock_draft_picks)
 
-        result = run_kicker_scan("league123", None, "Default Name", 12)
+        result = run_kicker_scan("league123", None, "Default Name", 12, rounds=4)
 
         assert result is not None
         assert "Test Dynasty League" in result
@@ -448,7 +454,7 @@ class TestRunKickerScan:
         """Test kicker scan with invalid league."""
         mock_league_info.return_value = None
 
-        result = run_kicker_scan("invalid_league", None, "Default Name", 12)
+        result = run_kicker_scan("invalid_league", None, "Default Name", 12, rounds=4)
 
         assert result is None
 
@@ -468,7 +474,7 @@ class TestRunKickerScan:
         mock_get_league_info.return_value = mock_league_info
         mock_resolve_draft.return_value = None
 
-        result = run_kicker_scan("league123", None, "Default Name", 12)
+        result = run_kicker_scan("league123", None, "Default Name", 12, rounds=4)
 
         assert result is None
 
@@ -493,7 +499,7 @@ class TestRunKickerScan:
         mock_get_players.return_value = mock_player_data
         mock_fetch_draft.return_value = (None, None)
 
-        result = run_kicker_scan("league123", None, "Default Name", 12)
+        result = run_kicker_scan("league123", None, "Default Name", 12, rounds=4)
 
         assert result is None
 
@@ -518,7 +524,7 @@ class TestRunKickerScan:
         mock_get_players.return_value = mock_player_data
         mock_fetch_draft.return_value = (mock_users_data, mock_draft_picks)
 
-        result = run_kicker_scan("league123", None, "Custom League Name", 12)
+        result = run_kicker_scan("league123", None, "Custom League Name", 12, rounds=4)
 
         assert result is not None
         assert "Custom League Name" in result
